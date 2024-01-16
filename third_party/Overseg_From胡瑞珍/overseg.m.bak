@@ -1,0 +1,26 @@
+%Step 1: compile c++ codes
+mex computefacetop.cpp face_topology.cpp
+mex hie_clus.cpp hierarchical_clustering.cpp
+
+%Step 2: Parameters
+Para.minEdgeWeight = 0.1;               % minimum edge weights
+Para.alphaAngle = 0.33;                 % Used in make the edge weights more uniformly distributed
+Para.numOfTargetPatches = 100;           % number of segments
+Para.areaRatio = 1.0;                   % See [GF08] for details
+
+for j=101:120
+    %Step 3: over-segmentation
+    model_name = ['Data\20111206_cup_r\', num2str(j), '.obj']
+    model = loadfobj(model_name);
+    fpIds = normalized_cut_gf08(model, Para);
+
+    %Step 4: output
+    seg_name = ['Data\', num2str(j), '_', num2str(Para.numOfTargetPatches),'.txt'];
+    fid=fopen(seg_name,'wt');
+    n = size(fpIds, 2);
+    for i=1:n
+        fprintf (fid,'%d\n', fpIds(1,i)-1); %start from 0
+    end
+    fclose(fid);
+end
+

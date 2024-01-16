@@ -1,0 +1,13 @@
+dir = 'D:\Co-seg_mine\Testing\161_180_teddy';
+model_name = '161';
+[model] = loadfobj([dir,'\',model_name,'.obj']);
+
+% 读取face_segment文件,face_patchids,即每个面片对应的segment指标
+filename = '161_50_logsdf_logagd_cg_lps_hsc_curv_seg_3_100_1_1_0.0001_40_mr';
+fid_fs = fopen([dir,'\',filename,'.fs'],'r');
+X_temp = textscan(fid_fs, '%f');
+fclose(fid_fs);
+face_patchids = X_temp{1}+1;
+
+[PatchGraph] = compute_patch_graph(model, face_patchids);
+
